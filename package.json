@@ -2,12 +2,7 @@
   "name": "linter-codeclimate",
   "main": "./lib/linter-codeclimate",
   "version": "0.0.1",
-  "description": "A short description of your package",
-  "keywords": [
-  ],
-  "activationCommands": {
-    "atom-workspace": "linter-codeclimate:toggle"
-  },
+  "description": "An Atom Linter plugin for the Code Climate CLI",
   "repository": "https://github.com/atom/linter-codeclimate",
   "license": "MIT",
   "engines": {
@@ -15,5 +10,12 @@
   },
   "dependencies": {
     "atom-linter": "3.3.1"
+  },
+  "providedServices": {
+    "linter": {
+      "versions": {
+        "1.0.0": "provideLinter"
+      }
+    }
   }
 }

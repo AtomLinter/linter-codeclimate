@@ -17,7 +17,7 @@ module.exports =
     @subscriptions.dispose()
 
   provideLinter: ->
-    Helper = require('atom-linter')
+    Helpers = require('atom-linter')
     configurationFile = '.codeclimate.yml'
     linterMap = {
       'Ruby': 'rubocop'
@@ -25,6 +25,7 @@ module.exports =
     provider =
       grammarScopes: ['*'] # Lint everything then filter with map
       lintOnFly: true
+      scope: 'file'
       statusIconScope: 'file'
       lint: (textEditor) =>
         filePath = textEditor.getPath()
@@ -41,7 +42,10 @@ module.exports =
         if (!configurationFilePath)
           fileDir = __dirname
 
-        return helpers.exec(@executablePath, ['analyze', '-e', linterName, '-f', 'json', filePath], {cwd: fileDir}).then(JSON.parse)
+        execPath = Path.dirname(configurationFilePath)
+        relativeFilePath = atom.project.relativize(filePath)
+
+        return Helpers.exec(@executablePath, ['analyze', '-e', linterName, '-f', 'json', relativeFilePath], {cwd: execPath})
           .then((messages) =>
             console.log(messages)
             return []
