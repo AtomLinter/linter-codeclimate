@@ -25,9 +25,9 @@ module.exports =
       'CoffeeScript': 'coffeelint',
     }
     provider =
+      name: 'CodeClimate'
       grammarScopes: ['*'] # Lint everything then filter with map
       scope: 'project'
-      lintOnFly: true
       lint: (textEditor) =>
         filePath = textEditor.getPath()
         fileDir = Path.dirname(filePath)
@@ -47,8 +47,6 @@ module.exports =
         relativeFilePath = atom.project.relativize(filePath)
 
         cmd = "codeclimate analyze -f json -e " + linterName + " " + relativeFilePath + " < /dev/null"
-
-        console.log(cmd)
 
         return Helpers
           .exec("/bin/bash", ["-c", cmd], {cwd: execPath})
@@ -73,6 +71,5 @@ module.exports =
                   range: [[beginLine-1,0], [endLine-1,0]]
                 }
                 linterResults.push lintData
-            console.log "Logged " + messages.length
             return linterResults
           )
