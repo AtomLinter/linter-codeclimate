@@ -24,9 +24,8 @@ module.exports =
     }
     provider =
       grammarScopes: ['*'] # Lint everything then filter with map
+      scope: 'project'
       lintOnFly: true
-      scope: 'file'
-      statusIconScope: 'file'
       lint: (textEditor) =>
         filePath = textEditor.getPath()
         fileDir = Path.dirname(filePath)
@@ -36,7 +35,7 @@ module.exports =
         if (linterMap.hasOwnProperty(grammarName) == true)
           linterName = linterMap[grammarName]
         else
-          return [] # The grammar is unknown to us, ignore
+          return []
 
         configurationFilePath = Helpers.findFile(fileDir, configurationFile)
         if (!configurationFilePath)
@@ -45,8 +44,24 @@ module.exports =
         execPath = Path.dirname(configurationFilePath)
         relativeFilePath = atom.project.relativize(filePath)
 
-        return Helpers.exec(@executablePath, ['analyze', '-e', linterName, '-f', 'json', relativeFilePath], {cwd: execPath})
+        cmd = "codeclimate analyze -f json -e " + linterName + " " + relativeFilePath + " < /dev/null"
+
+        return Helpers
+          .exec("/bin/bash", ["-c", cmd], {cwd: execPath})
+          .then(JSON.parse)
           .then((messages) =>
-            console.log(messages)
-            return []
+            linterResults = []
+            for issue in messages
+              do (issue) ->
+                beginLine = issue.location.positions.begin.line
+                endLine = issue.location.positions.end.line
+                lintData = {
+                  type: issue.check_name,
+                  text: issue.description,
+                  filePath: issue.location.path,
+                  range: [[beginLine-1,0], [endLine-1,0]]
+                }
+                linterResults.push lintData
+            console.log "Logged " + messages.length
+            return linterResults
           )
