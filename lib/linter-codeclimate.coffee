@@ -20,7 +20,9 @@ module.exports =
     Helpers = require('atom-linter')
     configurationFile = '.codeclimate.yml'
     linterMap = {
-      'Ruby': 'rubocop'
+      'Ruby': 'rubocop',
+      'JavaScript': 'eslint',
+      'CoffeeScript': 'coffeelint',
     }
     provider =
       grammarScopes: ['*'] # Lint everything then filter with map
@@ -46,15 +48,24 @@ module.exports =
 
         cmd = "codeclimate analyze -f json -e " + linterName + " " + relativeFilePath + " < /dev/null"
 
+        console.log(cmd)
+
         return Helpers
           .exec("/bin/bash", ["-c", cmd], {cwd: execPath})
           .then(JSON.parse)
           .then((messages) =>
             linterResults = []
             for issue in messages
+              if (issue.location.positions)
+                locLineBegin = issue.location.positions.begin.line
+                locLineEnd = issue.location.positions.end.line
+              else
+                locLineBegin = issue.location.lines.begin
+                locLineEnd = issue.location.lines.begin
+
               do (issue) ->
-                beginLine = issue.location.positions.begin.line
-                endLine = issue.location.positions.end.line
+                beginLine = locLineBegin
+                endLine = locLineEnd
                 lintData = {
                   type: issue.check_name,
                   text: issue.description,

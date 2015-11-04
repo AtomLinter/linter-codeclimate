@@ -1,3 +1,7 @@
 engines:
   rubocop:
     enabled: true
+  eslint:
+    enabled: true
+  coffeelint:
+    enabled: true
