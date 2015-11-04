@@ -3,7 +3,7 @@
   "main": "./lib/linter-codeclimate",
   "version": "0.0.1",
   "description": "An Atom Linter plugin for the Code Climate CLI",
-  "repository": "https://github.com/atom/linter-codeclimate",
+  "repository": "https://github.com/AtomLinter/linter-codeclimate",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
