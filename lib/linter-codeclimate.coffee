@@ -25,9 +25,9 @@ module.exports =
       'CoffeeScript': 'coffeelint',
     }
     provider =
-      name: 'CodeClimate'
+      name: 'Code Climate'
       grammarScopes: ['*'] # Lint everything then filter with map
-      scope: 'project'
+      scope: 'file'
       lint: (textEditor) =>
         filePath = textEditor.getPath()
         fileDir = Path.dirname(filePath)
@@ -46,7 +46,10 @@ module.exports =
         execPath = Path.dirname(configurationFilePath)
         relativeFilePath = atom.project.relativize(filePath)
 
-        cmd = "codeclimate analyze -f json -e " + linterName + " " + relativeFilePath + " < /dev/null"
+        cmd = "codeclimate analyze -f json -e " +
+                linterName +
+                " '" + relativeFilePath + "'" +
+                " < /dev/null"
 
         return Helpers
           .exec("/bin/bash", ["-c", cmd], {cwd: execPath})
@@ -59,17 +62,14 @@ module.exports =
                 locLineEnd = issue.location.positions.end.line
               else
                 locLineBegin = issue.location.lines.begin
-                locLineEnd = issue.location.lines.begin
+                locLineEnd = issue.location.lines.end
 
               do (issue) ->
-                beginLine = locLineBegin
-                endLine = locLineEnd
-                lintData = {
-                  type: issue.check_name,
-                  text: issue.description,
-                  filePath: issue.location.path,
-                  range: [[beginLine-1,0], [endLine-1,0]]
-                }
-                linterResults.push lintData
+                linterResults.push({
+                  type: "Warning"
+                  text: issue.description
+                  filePath
+                  range: [[locLineBegin-1,0], [locLineEnd-1,0]]
+                })
             return linterResults
           )
