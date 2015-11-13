@@ -1,6 +1,9 @@
 {CompositeDisposable} = require 'atom'
 Path = require 'path'
 
+makeEngineString = (engineNames) ->
+  (("-e " + language) for language in engineNames).join(" ")
+
 module.exports =
   config:
     executablePath:
@@ -20,9 +23,10 @@ module.exports =
     Helpers = require('atom-linter')
     configurationFile = '.codeclimate.yml'
     linterMap = {
-      'Ruby': 'rubocop',
-      'JavaScript': 'eslint',
-      'CoffeeScript': 'coffeelint',
+      '*': ['fixme'],
+      'Ruby': ['rubocop'],
+      'JavaScript': ['eslint'],
+      'CoffeeScript': ['coffeelint']
     }
     provider =
       name: 'Code Climate'
@@ -32,24 +36,27 @@ module.exports =
         filePath = textEditor.getPath()
         fileDir = Path.dirname(filePath)
         grammarName = textEditor.getGrammar().name
-        linterName = null
+        linterNameArray = [makeEngineString(linterMap['*'])]
 
         if (linterMap.hasOwnProperty(grammarName) == true)
-          linterName = linterMap[grammarName]
-        else
-          return []
+          linterNameArray.push(makeEngineString(linterMap[grammarName]))
+
+        linterNames = linterNameArray.join(" ")
 
         configurationFilePath = Helpers.findFile(fileDir, configurationFile)
         if (!configurationFilePath)
           fileDir = __dirname
 
         execPath = Path.dirname(configurationFilePath)
-        relativeFilePath = atom.project.relativize(filePath)
+        relativeFilePath = "'" + atom.project.relativize(filePath) + "'"
 
-        cmd = "codeclimate analyze -f json -e " +
-                linterName +
-                " '" + relativeFilePath + "'" +
-                " < /dev/null"
+        cmd = ["codeclimate analyze",
+               "-f json",
+               linterNames,
+               relativeFilePath,
+               "< /dev/null"].join(" ")
+
+        console.log cmd
 
         analysisBeginTime = Date.now()
         return Helpers

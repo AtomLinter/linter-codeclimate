@@ -5,3 +5,5 @@ engines:
     enabled: true
   coffeelint:
     enabled: true
+  fixme:
+    enabled: true
