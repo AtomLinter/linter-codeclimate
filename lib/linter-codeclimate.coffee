@@ -51,8 +51,9 @@ module.exports =
                 " '" + relativeFilePath + "'" +
                 " < /dev/null"
 
+        analysisBeginTime = Date.now()
         return Helpers
-          .exec("/bin/bash", ["-c", cmd], {cwd: execPath})
+          .exec("/bin/bash", ["-lc", cmd], {cwd: execPath})
           .then(JSON.parse)
           .then((messages) =>
             linterResults = []
@@ -60,16 +61,21 @@ module.exports =
               if (issue.location.positions)
                 locLineBegin = issue.location.positions.begin.line
                 locLineEnd = issue.location.positions.end.line
+                locPosBegin = issue.location.positions.begin.column || 0
+                locPosEnd = 80
               else
                 locLineBegin = issue.location.lines.begin
                 locLineEnd = issue.location.lines.end
+                locPosBegin = 0
+                locPosEnd = 80
 
               do (issue) ->
                 linterResults.push({
                   type: "Warning"
                   text: issue.description
-                  filePath
-                  range: [[locLineBegin-1,0], [locLineEnd-1,0]]
+                  filePath: filePath
+                  range: [[locLineBegin-1,locPosBegin], [locLineEnd-1,locPosEnd]]
                 })
+            console.log("Code Climate analysis: " + (Date.now() - analysisBeginTime) + "ms")
             return linterResults
           )
