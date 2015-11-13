@@ -26,7 +26,9 @@ module.exports =
       '*': ['fixme'],
       'Ruby': ['rubocop'],
       'JavaScript': ['eslint'],
-      'CoffeeScript': ['coffeelint']
+      'CoffeeScript': ['coffeelint'],
+      'Python': ['pep8', 'radon'],
+      'PHP': ['phpcodesniffer', 'phpmd']
     }
     provider =
       name: 'Code Climate'
