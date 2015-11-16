@@ -10,6 +10,12 @@ getEnabledEngines = (configFilePath) ->
   configYaml = YAML.safeLoad(FS.readFileSync(configFilePath, "utf8"))
   (engine for engine, attrs of configYaml["engines"] when attrs["enabled"] == true)
 
+getPosEnd = (posEnd, posBeg) ->
+  if posBeg == posEnd
+    return posBeg + 2
+  else
+    posEnd || 120
+
 module.exports =
   config:
     executablePath:
@@ -47,7 +53,7 @@ module.exports =
         linterNameArray = linterMap['*']
 
         if (linterMap.hasOwnProperty(grammarName) == true)
-          linterNameArray.push(linter) for linter in linterMap[grammarName]
+          linterNameArray.push(linter) for linter in linterMap[grammarName] when (linter not in linterNameArray)
 
         configurationFilePath = Helpers.findFile(fileDir, configurationFile)
         if (!configurationFilePath)
@@ -64,11 +70,11 @@ module.exports =
           return []
 
         configEnabledEngines = getEnabledEngines(configurationFilePath)
-        linterEnabledEngines = (linter for linter in linterNameArray when (linter in configEnabledEngines))
+        linterEnabledEngines = (linter for linter in linterNameArray when ((linter in configEnabledEngines) == true))
 
         cmd = ["codeclimate analyze",
                "-f json",
-               makeEngineString(linterEnabledEngines),
+               makeEngineString(linter for linter in linterEnabledEngines when linter),
                "'" + atom.project.relativize(filePath) + "'",
                "< /dev/null"].join(" ")
 
@@ -82,23 +88,22 @@ module.exports =
             linterResults = []
             for issue in messages
               if (issue.location.positions)
-                locLineBegin = issue.location.positions.begin.line
-                locLineEnd = issue.location.positions.end.line
-                locPosBegin = issue.location.positions.begin.column || 0
-                locPosEnd = 80
+                locLine = issue.location.positions.begin.line - 1
+                locPosBeg = (issue.location.positions.begin.column - 1) || 0
+                locPosEnd = getPosEnd(issue.location.positions.end.column, issue.location.positions.begin.column)
               else
-                locLineBegin = issue.location.lines.begin
-                locLineEnd = issue.location.lines.end
-                locPosBegin = 0
-                locPosEnd = 80
+                locLine = issue.location.lines.begin - 1
+                locPosBeg = 0
+                locPosEnd = 120
 
               do (issue) ->
                 linterResults.push({
                   type: "Warning"
                   text: issue.description
                   filePath: filePath
-                  range: [[locLineBegin-1,locPosBegin], [locLineEnd-1,locPosEnd]]
+                  range: [[locLine,locPosBeg], [locLine,locPosEnd]]
                 })
+
             console.log("Code Climate analysis: " + (Date.now() - analysisBeginTime) + "ms")
             return linterResults
           )
