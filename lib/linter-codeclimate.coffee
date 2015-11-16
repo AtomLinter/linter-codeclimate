@@ -1,8 +1,14 @@
 {CompositeDisposable} = require 'atom'
+FS = require 'fs'
 Path = require 'path'
+YAML = require 'js-yaml'
 
 makeEngineString = (engineNames) ->
   (("-e " + language) for language in engineNames).join(" ")
+
+getEnabledEngines = (configFilePath) ->
+  configYaml = YAML.safeLoad(FS.readFileSync(configFilePath, "utf8"))
+  (engine for engine, attrs of configYaml["engines"] when attrs["enabled"] == true)
 
 module.exports =
   config:
@@ -38,31 +44,30 @@ module.exports =
         filePath = textEditor.getPath()
         fileDir = Path.dirname(filePath)
         grammarName = textEditor.getGrammar().name
-        linterNameArray = [makeEngineString(linterMap['*'])]
+        linterNameArray = linterMap['*']
 
         if (linterMap.hasOwnProperty(grammarName) == true)
-          linterNameArray.push(makeEngineString(linterMap[grammarName]))
-
-        linterNames = linterNameArray.join(" ")
+          linterNameArray.push(linter) for linter in linterMap[grammarName]
 
         configurationFilePath = Helpers.findFile(fileDir, configurationFile)
         if (!configurationFilePath)
-          fileDir = __dirname
+          # Throw error
+          return []
 
-        execPath = Path.dirname(configurationFilePath)
-        relativeFilePath = "'" + atom.project.relativize(filePath) + "'"
+        configEnabledEngines = getEnabledEngines(configurationFilePath)
+        linterEnabledEngines = (linter for linter in linterNameArray when (linter in configEnabledEngines))
 
         cmd = ["codeclimate analyze",
                "-f json",
-               linterNames,
-               relativeFilePath,
+               makeEngineString(linterEnabledEngines),
+               "'" + atom.project.relativize(filePath) + "'",
                "< /dev/null"].join(" ")
 
         console.log cmd
 
         analysisBeginTime = Date.now()
         return Helpers
-          .exec("/bin/bash", ["-lc", cmd], {cwd: execPath})
+          .exec("/bin/bash", ["-lc", cmd], {cwd: Path.dirname(configurationFilePath)})
           .then(JSON.parse)
           .then((messages) =>
             linterResults = []

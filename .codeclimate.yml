@@ -7,3 +7,11 @@ engines:
     enabled: true
   fixme:
     enabled: true
+  phpmd:
+    enabled: true
+  phpcodesniffer:
+    enabled: true
+  pep8:
+    enabled: true
+  radon:
+    enabled: true
