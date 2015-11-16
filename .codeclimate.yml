@@ -1,17 +1,11 @@
+---
 engines:
-  rubocop:
-    enabled: true
-  eslint:
-    enabled: true
   coffeelint:
     enabled: true
   fixme:
     enabled: true
-  phpmd:
-    enabled: true
-  phpcodesniffer:
-    enabled: true
-  pep8:
-    enabled: true
-  radon:
-    enabled: true
+ratings:
+  paths:
+  - "**.coffee"
+exclude_paths:
+- node_modules/**/*

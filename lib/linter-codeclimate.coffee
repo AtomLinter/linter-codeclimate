@@ -51,7 +51,16 @@ module.exports =
 
         configurationFilePath = Helpers.findFile(fileDir, configurationFile)
         if (!configurationFilePath)
-          # Throw error
+          gitDir = Path.dirname(Helpers.findFile(fileDir, ".git"))
+          message = "No .codeclimate.yml file found. Should I initialize one for you in " + gitDir + "?"
+
+          if atom.config.get("codeclimate.linter.init") != false
+            initRepo = confirm(message)
+            if initRepo
+              Helpers.exec("/bin/bash", ["-lc", "codeclimate init"], {cwd: gitDir})
+              alert("init complete. Save your code again to run Code Climate analysis.")
+            else
+              atom.config.set("codeclimate.linter.init", false)
           return []
 
         configEnabledEngines = getEnabledEngines(configurationFilePath)
