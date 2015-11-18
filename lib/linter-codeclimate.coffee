@@ -37,6 +37,7 @@ module.exports =
     configurationFile = '.codeclimate.yml'
     linterMap = {
       '*': ['fixme'],
+      'Ruby on Rails': ['rubocop'],
       'Ruby': ['rubocop'],
       'JavaScript': ['eslint'],
       'CoffeeScript': ['coffeelint'],
