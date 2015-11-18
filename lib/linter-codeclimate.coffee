@@ -2,6 +2,7 @@
 FS = require 'fs'
 Path = require 'path'
 YAML = require 'js-yaml'
+EX = require('child_process').execSync
 
 makeEngineString = (engineNames) ->
   (("-e " + language) for language in engineNames).join(" ")
@@ -52,6 +53,14 @@ module.exports =
         grammarName = textEditor.getGrammar().name
         linterNameArray = linterMap['*']
 
+        if !FS.existsSync(@executablePath)
+          try
+            @executablePath = EX("/bin/bash -lc 'which codeclimate'").toString().trim()
+            atom.config.set("linter-codeclimate.executablePath", @executablePath)
+          catch error
+            console.log "codeclimate binary not found! Installation instructions at http://github.com/codeclimate/codeclimate"
+            return []
+
         if (linterMap.hasOwnProperty(grammarName) == true)
           linterNameArray.push(linter) for linter in linterMap[grammarName] when (linter not in linterNameArray)
 
@@ -60,19 +69,19 @@ module.exports =
           gitDir = Path.dirname(Helpers.findFile(fileDir, ".git"))
           message = "No .codeclimate.yml file found. Should I initialize one for you in " + gitDir + "?"
 
-          if atom.config.get("codeclimate.linter.init") != false
+          if atom.config.get("linter-codeclimate.init") != false
             initRepo = confirm(message)
             if initRepo
-              Helpers.exec("/bin/bash", ["-lc", "codeclimate init"], {cwd: gitDir})
+              Helpers.exec("/bin/bash", ["-lc", @executablePath + " init"], {cwd: gitDir})
               alert("init complete. Save your code again to run Code Climate analysis.")
             else
-              atom.config.set("codeclimate.linter.init", false)
+              atom.config.set("linter-codeclimate.init", false)
           return []
 
         configEnabledEngines = getEnabledEngines(configurationFilePath)
         linterEnabledEngines = (linter for linter in linterNameArray when ((linter in configEnabledEngines) == true))
 
-        cmd = ["codeclimate analyze",
+        cmd = [@executablePath, "analyze",
                "-f json",
                makeEngineString(linter for linter in linterEnabledEngines when linter),
                "'" + atom.project.relativize(filePath) + "'",

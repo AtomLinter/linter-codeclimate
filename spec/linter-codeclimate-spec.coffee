@@ -28,5 +28,5 @@ describe "linter-codeclimate package", ->
       expect(atom.workspace.getActiveTextEditor().getGrammar().name).toBe "Ruby"
       runs ->
         atom.commands.dispatch(atom.views.getView(atom.workspace), "core:save")
-        cmd = 'codeclimate analyze -f json -e fixme -e rubocop \'cool_code.rb\' < /dev/null'
+        cmd = '/usr/local/bin/codeclimate analyze -f json -e fixme -e rubocop \'cool_code.rb\' < /dev/null'
         expect(helpers.exec).toHaveBeenCalledWith("/bin/bash", ["-lc", cmd], {cwd: fixturesPath})
