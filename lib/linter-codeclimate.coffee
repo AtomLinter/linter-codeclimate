@@ -63,7 +63,7 @@ module.exports =
             @executablePath = EX("/bin/bash -lc 'which codeclimate'").toString().trim()
             atom.config.set("linter-codeclimate.executablePath", @executablePath)
           catch error
-            console.log "codeclimate binary not found! Installation instructions at http://github.com/codeclimate/codeclimate"
+            atom.notifications.addError("codeclimate binary not found! Installation instructions at http://github.com/codeclimate/codeclimate")
             return []
 
         # Search for a .codeclimate.yml in the project tree. If one isn't found,
@@ -73,13 +73,16 @@ module.exports =
         configurationFilePath = Helpers.findFile(fileDir, configurationFile)
         if (!configurationFilePath)
           gitDir = Path.dirname(Helpers.findFile(fileDir, ".git"))
-          message = "No .codeclimate.yml file found. Should I initialize one for you in " + gitDir + "?"
 
           if atom.config.get("linter-codeclimate.init") != false
+            message = "No .codeclimate.yml file found. Should I initialize one for you in " + gitDir + "?"
             initRepo = confirm(message)
             if initRepo
-              Helpers.exec("/bin/bash", ["-lc", @executablePath + " init"], {cwd: gitDir})
-              alert("init complete. Save your code again to run Code Climate analysis.")
+              try
+                EX("/bin/bash -lc '" + @executablePath + " init'", {cwd: gitDir})
+                atom.notifications.addSuccess("init complete. Save your code again to run Code Climate analysis.")
+              catch error
+                atom.notifications.addError("Unable to initialize .codeclimate.yml file in " + gitDir)
             else
               atom.config.set("linter-codeclimate.init", false)
           return []
