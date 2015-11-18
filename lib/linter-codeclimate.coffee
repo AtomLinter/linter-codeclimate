@@ -37,23 +37,27 @@ module.exports =
     configurationFile = '.codeclimate.yml'
     linterMap = {
       '*': ['fixme'],
-      'Ruby on Rails': ['rubocop'],
       'Ruby': ['rubocop'],
+      'Ruby on Rails': ['rubocop'],
+      'Ruby on Rails (RJS)': ['rubocop'],
       'JavaScript': ['eslint'],
       'CoffeeScript': ['coffeelint'],
+      'CoffeeScript (Literate)': ['coffeelint'],
       'Python': ['pep8', 'radon'],
       'PHP': ['phpcodesniffer', 'phpmd']
     }
     provider =
       name: 'Code Climate'
-      grammarScopes: ['*'] # Lint everything then filter with map
+      grammarScopes: ['*']
       scope: 'file'
       lint: (textEditor) =>
         filePath = textEditor.getPath()
         fileDir = Path.dirname(filePath)
         grammarName = textEditor.getGrammar().name
-        linterNameArray = linterMap['*']
+        linterNameArray = []
+        linterNameArray.push(linter) for linter in linterMap['*']
 
+        # Make sure executable path exists and reconcile it if it doesn't
         if !FS.existsSync(@executablePath)
           try
             @executablePath = EX("/bin/bash -lc 'which codeclimate'").toString().trim()
@@ -62,9 +66,10 @@ module.exports =
             console.log "codeclimate binary not found! Installation instructions at http://github.com/codeclimate/codeclimate"
             return []
 
-        if (linterMap.hasOwnProperty(grammarName) == true)
-          linterNameArray.push(linter) for linter in linterMap[grammarName] when (linter not in linterNameArray)
-
+        # Search for a .codeclimate.yml in the project tree. If one isn't found,
+        # use the presence of a .git directory as the assumed project root,
+        # and offer to create a .codeclimate.yml file there. If the user doesn't
+        # want one, and says no, we won't bug them again.
         configurationFilePath = Helpers.findFile(fileDir, configurationFile)
         if (!configurationFilePath)
           gitDir = Path.dirname(Helpers.findFile(fileDir, ".git"))
@@ -79,18 +84,29 @@ module.exports =
               atom.config.set("linter-codeclimate.init", false)
           return []
 
+        # Construct the list of linters to be passed to the CLI by looking at
+        # the linters made available for our language grammar by the LinterMap,
+        # and whether or not the engines are enabled in a user's config file.
+        if (linterMap.hasOwnProperty(grammarName) == true)
+          linterNameArray.push(linter) for linter in linterMap[grammarName] when (linter not in linterNameArray)
         configEnabledEngines = getEnabledEngines(configurationFilePath)
         linterEnabledEngines = (linter for linter in linterNameArray when ((linter in configEnabledEngines) == true))
 
+        # Construct the command line invocation which runs the Code Climate CLI
         cmd = [@executablePath, "analyze",
                "-f json",
                makeEngineString(linter for linter in linterEnabledEngines when linter),
                "'" + atom.project.relativize(filePath) + "'",
                "< /dev/null"].join(" ")
 
+        # Debug the command executed to run the Code Climate CLI to the console
         console.log cmd
 
+        # Record time for the purposes of displaying total analysis run time
         analysisBeginTime = Date.now()
+
+        # Execute the Code Climate CLI, parse the results, and emit them to the
+        # Linter package as warnings. The Linter package handles the styling.
         return Helpers
           .exec("/bin/bash", ["-lc", cmd], {cwd: Path.dirname(configurationFilePath)})
           .then(JSON.parse)
@@ -114,6 +130,7 @@ module.exports =
                   range: [[locLine,locPosBeg], [locLine,locPosEnd]]
                 })
 
+            # Log the length of time it took to run analysis
             console.log("Code Climate analysis: " + (Date.now() - analysisBeginTime) + "ms")
             return linterResults
           )
