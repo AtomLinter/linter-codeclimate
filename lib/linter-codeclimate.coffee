@@ -69,7 +69,7 @@ module.exports =
         # Search for a .codeclimate.yml in the project tree. If one isn't found,
         # use the presence of a .git directory as the assumed project root,
         # and offer to create a .codeclimate.yml file there. If the user doesn't
-        # want one, and says no, we won't bug them again.
+        # want one, and says no, we won't bother them again.
         configurationFilePath = Helpers.findFile(fileDir, configurationFile)
         if (!configurationFilePath)
           gitDir = Path.dirname(Helpers.findFile(fileDir, ".git"))
