@@ -44,7 +44,8 @@ module.exports =
       'CoffeeScript': ['coffeelint'],
       'CoffeeScript (Literate)': ['coffeelint'],
       'Python': ['pep8', 'radon'],
-      'PHP': ['phpcodesniffer', 'phpmd']
+      'PHP': ['phpcodesniffer', 'phpmd'],
+      'Go': ['gofmt', 'golint', 'govet']
     }
     provider =
       name: 'Code Climate'
