@@ -37,15 +37,16 @@ module.exports =
     configurationFile = '.codeclimate.yml'
     linterMap = {
       '*': ['fixme'],
-      'Ruby': ['rubocop'],
-      'Ruby on Rails': ['rubocop'],
-      'Ruby on Rails (RJS)': ['rubocop'],
+      'Ruby': ['rubocop', 'reek'],
+      'Ruby on Rails': ['rubocop', 'reek'],
+      'Ruby on Rails (RJS)': ['rubocop', 'reek'],
       'JavaScript': ['eslint'],
       'CoffeeScript': ['coffeelint'],
       'CoffeeScript (Literate)': ['coffeelint'],
       'Python': ['pep8', 'radon'],
       'PHP': ['phpcodesniffer', 'phpmd'],
-      'Go': ['gofmt', 'golint', 'govet']
+      'Go': ['gofmt', 'golint', 'govet'],
+      'GitHub Markdown': ['markdownlint']
     }
     provider =
       name: 'Code Climate'
