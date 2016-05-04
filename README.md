@@ -60,3 +60,4 @@ Note that currently `linter-codeclimate` works only on single file analysis type
 * CoffeeScript: CoffeeLint
 * JavaScript: ESLint
 * PHP: PHPCodeSniffer, PHPMD
+
