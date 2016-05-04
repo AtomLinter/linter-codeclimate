@@ -3,6 +3,8 @@ engines:
   coffeelint:
     enabled: true
     config: coffeelint.json
+  rubocop:
+    enabled: true
   fixme:
     enabled: true
 ratings:
