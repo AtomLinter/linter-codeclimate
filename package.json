@@ -11,7 +11,7 @@
   "dependencies": {
     "atom-linter": "^8.0.0",
     "js-yaml": "^3.5.3",
-    "fs-plus": "^2.8.2"
+    "fs-plus": "^2.9.2"
   },
   "providedServices": {
     "linter": {
