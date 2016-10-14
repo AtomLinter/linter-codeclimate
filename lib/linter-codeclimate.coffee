@@ -98,7 +98,7 @@ module.exports =
         linterEnabledEngines = (linter for linter in linterNameArray when ((linter in configEnabledEngines) == true))
 
         # Construct the command line invocation which runs the Code Climate CLI
-        cmd = [@executablePath, "analyze",
+        cmd = ["'"+@executablePath+"'", "analyze",
                "-f json",
                makeEngineString(linter for linter in linterEnabledEngines when linter),
                "'" + atom.project.relativize(filePath) + "'",
@@ -113,7 +113,7 @@ module.exports =
         # Execute the Code Climate CLI, parse the results, and emit them to the
         # Linter package as warnings. The Linter package handles the styling.
         return Helpers
-          .exec("/bin/bash", ["-lc", cmd], {cwd: Path.dirname(configurationFilePath)})
+          .exec("bash", ["-lc", cmd], {cwd: Path.dirname(configurationFilePath)})
           .then(JSON.parse)
           .then((messages) =>
             linterResults = []
