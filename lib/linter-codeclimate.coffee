@@ -101,7 +101,7 @@ module.exports =
         cmd = ["'"+@executablePath+"'", "analyze",
                "-f json",
                makeEngineString(linter for linter in linterEnabledEngines when linter),
-               "'" + atom.project.relativize(filePath) + "'",
+               "'" + atom.project.relativize(filePath).replace(/\\/g,"/") + "'",
                "< /dev/null"].join(" ")
 
         # Debug the command executed to run the Code Climate CLI to the console
