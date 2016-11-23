@@ -72,9 +72,9 @@ module.exports =
         # use the presence of a .git directory as the assumed project root,
         # and offer to create a .codeclimate.yml file there. If the user doesn't
         # want one, and says no, we won't bug them again.
-        configurationFilePath = Helpers.findFile(fileDir, configurationFile)
+        configurationFilePath = Helpers.find(fileDir, configurationFile)
         if (!configurationFilePath)
-          gitDir = Path.dirname(Helpers.findFile(fileDir, ".git"))
+          gitDir = Path.dirname(Helpers.find(fileDir, ".git"))
 
           if atom.config.get("linter-codeclimate.init") != false
             message = "No .codeclimate.yml file found. Should I initialize one for you in " + gitDir + "?"
