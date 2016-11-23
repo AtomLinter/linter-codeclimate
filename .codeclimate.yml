@@ -3,10 +3,14 @@ engines:
   coffeelint:
     enabled: true
     config: coffeelint.json
+  rubocop:
+    enabled: true
   fixme:
     enabled: true
 ratings:
   paths:
   - "**.coffee"
+  - "**.rb"
 exclude_paths:
+- spec/**/*
 - node_modules/**/*
