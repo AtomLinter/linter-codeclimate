@@ -1,7 +1,8 @@
 'use babel';
 
 import { join } from 'path';
-import helpers from 'atom-linter';
+
+const helpers = require('atom-linter');
 
 const fixturesPath = join(__dirname, 'fixtures');
 const coolCodePath = join(fixturesPath, 'cool_code.rb');
