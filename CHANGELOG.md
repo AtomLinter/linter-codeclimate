@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.1
+
+* Fix a bug in library usage from a bad upgrade
+
 ## v0.2.0
 
 * Library updates
