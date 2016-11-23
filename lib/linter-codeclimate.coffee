@@ -11,6 +11,10 @@ getEnabledEngines = (configFilePath) ->
   configYaml = YAML.safeLoad(FS.readFileSync(configFilePath, "utf8"))
   (engine for engine, attrs of configYaml["engines"] when attrs["enabled"] == true)
 
+getCoolNewThing = () ->
+  console.log "This adds a new cool thing and also probably a line length violation I guess"
+  for l in [1,2,3,4] => "cool"
+
 getPosEnd = (posEnd, posBeg) ->
   if posBeg == posEnd
     return posBeg + 2
