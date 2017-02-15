@@ -30,7 +30,7 @@ describe('The codeclimate provider for Linter', () => {
             "the method to accept any arguments but don't care about them.");
           expect(messages[0].html).not.toBeDefined();
           expect(messages[0].filePath).toBe(coolCodePath);
-          expect(messages[0].range).toEqual([[0, 5], [0, 7]]);
+          expect(messages[0].range).toEqual([[1, 11], [1, 14]]);
         },
       ),
     ),
