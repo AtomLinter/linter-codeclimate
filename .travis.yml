@@ -52,3 +52,4 @@ addons:
     - fakeroot
     - libgconf-2-4
     - xvfb
+    - libnss3-dev
