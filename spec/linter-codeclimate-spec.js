@@ -24,7 +24,10 @@ describe('The codeclimate provider for Linter', () => {
       atom.workspace.open(coolCodePath).then(editor => lint(editor)).then(
         (messages) => {
           expect(messages[0].type).toBe('Warning');
-          expect(messages[0].text).toBe('some text');
+          expect(messages[0].text).toBe('Unused method argument - `bar`. If ' +
+            "it's necessary, use `_` or `_bar` as an argument name to indicate " +
+            "that it won't be used. You can also write as `foo(*)` if you want " +
+            "the method to accept any arguments but don't care about them.");
           expect(messages[0].html).not.toBeDefined();
           expect(messages[0].filePath).toBe(coolCodePath);
           expect(messages[0].range).toEqual([[0, 5], [0, 7]]);
