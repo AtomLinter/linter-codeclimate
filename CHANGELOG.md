@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.3
+
+* Check for a non-existent .git directory (#56)
+* Dependency updates (#52 and #53)
+
 ## v0.2.2
 
 * Rewrite in ES2017 (#48)
