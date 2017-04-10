@@ -11,7 +11,21 @@
   "configSchema": {
     "executablePath": {
       "type": "string",
-      "default": "codeclimate"
+      "default": "codeclimate",
+      "description": "The full path to the `codeclimate` executable.",
+      "title": "Executable path"
+    },
+    "init": {
+      "type": "boolean",
+      "default": false,
+      "description": "Create a `.codeclimate.yml` file at the project root if not found.",
+      "title": "Generate initial configuration if not present"
+    },
+    "disableTimeout": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disable the 10 second execution timeout.",
+      "title": "Disable timeout"
     }
   },
   "dependencies": {
