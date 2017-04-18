@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.4
+
+* Allow disabling execution timeout (#61)
+
 ## v0.2.3
 
 * Check for a non-existent .git directory (#56)
