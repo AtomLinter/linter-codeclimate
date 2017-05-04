@@ -13,14 +13,15 @@ describe('The codeclimate provider for Linter', () => {
 
     waitsForPromise(() =>
       Promise.all([
-        atom.packages.activatePackage('language-ruby'),
         atom.packages.activatePackage('linter-codeclimate'),
       ]),
     );
   });
 
   it('works with a valid .codeclimate.yml file', () =>
-    waitsForPromise(() =>
+    waitsForPromise(
+      { timeout: 10000 },
+      () =>
       atom.workspace.open(coolCodePath).then(editor => lint(editor)).then(
         (messages) => {
           expect(messages[0].type).toBe('Warning');
