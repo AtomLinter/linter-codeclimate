@@ -29,9 +29,7 @@
     }
   },
   "dependencies": {
-    "atom-linter": "^10.0.0",
-    "js-yaml": "^3.5.3",
-    "fs-plus": "^3.0.0"
+    "atom-linter": "^10.0.0"
   },
   "providedServices": {
     "linter": {
