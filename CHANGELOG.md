@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.5
+
+* Allow only one concurrent analysis per file (#64)
+* Fix end column of issue range (#67)
+* Run all configured CC engines (#67)
+
 ## v0.2.4
 
 * Allow disabling execution timeout (#61)
