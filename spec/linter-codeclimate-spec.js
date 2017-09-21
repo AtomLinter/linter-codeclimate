@@ -9,6 +9,9 @@ const { lint } = require('../lib/index.js').provideLinter();
 const fixturesPath = join(__dirname, 'fixtures');
 const coolCodePath = join(fixturesPath, 'cool_code.rb');
 
+// Codeclimate can sometimes be quite slow (especially in a CI environment)
+jasmine.getEnv().defaultTimeoutInterval = 60 * 1000; // 60 seconds
+
 describe('The codeclimate provider for Linter', () => {
   beforeEach(async () => {
     atom.workspace.destroyActivePaneItem();
