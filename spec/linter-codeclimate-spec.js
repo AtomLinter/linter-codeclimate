@@ -19,8 +19,12 @@ describe('The codeclimate provider for Linter', () => {
   });
 
   it('works with a valid .codeclimate.yml file', async () => {
+    // eslint-disable-next-line no-console
+    console.log('Started the spec...');
     const editor = await atom.workspace.open(coolCodePath);
     const messages = await lint(editor);
+    // eslint-disable-next-line no-console
+    console.log('Messages: ', JSON.stringify(messages, null, ' '));
 
     expect(messages.length).toBe(1);
     expect(messages[0].severity).toBe('warning');
