@@ -49,15 +49,3 @@ And you should see some progress, and most likely, some results. Cool! Now it's 
 Once you have a functioning installation of the Code Climate CLI, you're ready to see the same results within the comfort of your favorite text editor. Install the `linter` package, the `linter-codeclimate` package, and make sure any of the language modes you prefer are also installed.
 
 Once these are installed, reload your editor (`View` -> `Reload` from the Atom menu), open a file of your choice, and save it. Code Climate analysis will run in the background and then pop up results that you can inspect right inside Atom. Awesome! You're now linting with superpowers.
-
-## Installation: Special Considerations
-
-Note that currently `linter-codeclimate` works only on single file analysis types, not on engines which analyze the entire codebase at once. The following engines currently work with the Atom package (this will soon be all packages - thanks for your patience as we work out some kinks):
-
-
-* All Languages: fixme
-* Python: Radon, Pep8
-* Ruby: Rubocop
-* CoffeeScript: CoffeeLint
-* JavaScript: ESLint
-* PHP: PHPCodeSniffer, PHPMD
