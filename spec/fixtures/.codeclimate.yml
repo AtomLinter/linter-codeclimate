@@ -2,8 +2,19 @@
 engines:
   rubocop:
     enabled: true
+    checks:
+      Rubocop/Layout/SpaceAfterMethodName:
+        enabled: false
+      Rubocop/Layout/SpaceAroundEqualsInParameterDefault:
+        enabled: false
+      Rubocop/Layout/SpaceBeforeBlockBraces:
+        enabled: false
+      Rubocop/Style/Lambda:
+        enabled: false
   fixme:
     enabled: true
+  structure:
+    enabled: false
 ratings:
   paths:
   - "**.coffee"

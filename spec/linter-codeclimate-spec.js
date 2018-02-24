@@ -4,7 +4,7 @@ import { join } from 'path';
 
 const fixturesPath = join(__dirname, 'fixtures');
 const coolCodePath = join(fixturesPath, 'cool_code.rb');
-const TIMEOUT = process.env.CI ? 60000 : 10000;
+const TIMEOUT = 200000;
 
 describe('The codeclimate provider for Linter', () => {
   const { lint } = require('../lib/index.js').provideLinter();
