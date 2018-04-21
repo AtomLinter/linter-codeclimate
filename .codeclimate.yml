@@ -7,3 +7,4 @@ ratings:
   - "**.js"
 exclude_paths:
 - node_modules/**/*
+- spec/**/*
