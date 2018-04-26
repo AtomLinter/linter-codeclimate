@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.3.0
+
+* Fix duplicated issues and upgrade to linter v2 (#65)
+* Analyze the whole project, not only the currently open file, so allowing for
+  any engine and including previously missing issues like duplicated code. (#83)
+* Debounce the linting process, so multiple files from the same project can
+  merge into one unique analysis. (#83)
+* Prevent caching an undefined TextEditor path (#88)
+
 ## v0.2.5
 
 * Allow only one concurrent analysis per file (#64)
